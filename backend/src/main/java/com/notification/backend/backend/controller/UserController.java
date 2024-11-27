@@ -1,5 +1,6 @@
 package com.notification.backend.backend.controller;
 
+import com.notification.backend.backend.model.Notification;
 import com.notification.backend.backend.model.User;
 import com.notification.backend.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +12,26 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
-    @GetMapping()
+    @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found. " + id));
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
     }
 
-    @PostMapping()
+    @PostMapping
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
+    }
+
+    @GetMapping("/{id}/notifications")
+    public List<Notification> getUserNotifications(@PathVariable Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+        return user.getNotifications();
     }
 }

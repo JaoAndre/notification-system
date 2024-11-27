@@ -1,5 +1,7 @@
 package com.notification.backend.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -26,7 +28,11 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User recipient;
+
+    @Column(nullable = false)
+    private boolean read = false;
 
     public enum NotificationType {
         EMAIL, SMS, PUSH
@@ -35,13 +41,14 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(Long id, String title, String message, NotificationType type, LocalDateTime sentAt, User recipient) {
+    public Notification(Long id, String title, String message, NotificationType type, LocalDateTime sentAt, User recipient, boolean read) {
         this.id = id;
         this.title = title;
         this.message = message;
         this.type = type;
         this.sentAt = sentAt;
         this.recipient = recipient;
+        this.read = read;
     }
 
     public Long getId() {
@@ -90,5 +97,13 @@ public class Notification {
 
     public void setRecipient(User recipient) {
         this.recipient = recipient;
+    }
+
+    public boolean isRead() {
+        return read;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }
